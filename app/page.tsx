@@ -14,8 +14,8 @@
 // 📚 Doc: node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md
 // =============================================================================
 
-import NotebookShell from "./_components/notebook-shell";
+import NotebookShell from './_components/notebook-shell';
 
 export default function HomePage() {
-  return <NotebookShell />;
+    return <NotebookShell />;
 }
