@@ -89,7 +89,7 @@ const it: Dictionary = {
                 {
                     slug: 'routing-basics',
                     label: 'Routing & Layouts',
-                    status: 'next',
+                    status: 'done',
                 },
                 {
                     slug: 'dynamic-routes/[id]',
@@ -239,7 +239,7 @@ const en: Dictionary = {
                 {
                     slug: 'routing-basics',
                     label: 'Routing & Layouts',
-                    status: 'next',
+                    status: 'done',
                 },
                 {
                     slug: 'dynamic-routes/[id]',
@@ -388,7 +388,7 @@ const uk: Dictionary = {
                 {
                     slug: 'routing-basics',
                     label: 'Routing & Layouts',
-                    status: 'next',
+                    status: 'done',
                 },
                 {
                     slug: 'dynamic-routes/[id]',
