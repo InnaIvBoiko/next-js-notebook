@@ -122,8 +122,8 @@ const it: Dictionary = {
                 },
                 {
                     slug: 'action-pending',
-                    label: 'useFormStatus',
-                    status: 'locked',
+                    label: 'Pending UI',
+                    status: 'done',
                 },
             ],
         },
@@ -272,8 +272,8 @@ const en: Dictionary = {
                 },
                 {
                     slug: 'action-pending',
-                    label: 'useFormStatus',
-                    status: 'locked',
+                    label: 'Pending UI',
+                    status: 'done',
                 },
             ],
         },
@@ -421,8 +421,8 @@ const uk: Dictionary = {
                 },
                 {
                     slug: 'action-pending',
-                    label: 'useFormStatus',
-                    status: 'locked',
+                    label: 'Pending UI',
+                    status: 'done',
                 },
             ],
         },
