@@ -1,14 +1,19 @@
 'use client';
 // =============================================================================
-// app/lessons/context-provider/_components/theme-controls.tsx
-// SPLIT WRITER — subscribes ONLY to ThemeSetterContext (via useThemeSetter).
-// The render counter on this card should STAY PUT when you change theme,
-// because this component never reads the theme value. That is the win of
-// splitting state and setter into two contexts.
+// app/lessons/zustand-store/_components/theme-controls.tsx
+// WRITER — subscribes ONLY to the `setTheme` action via `s => s.setTheme`.
+// Zustand keeps action references stable across renders (the function is
+// defined once in the store initialiser and never recreated), so this
+// selector returns the same value forever → this component NEVER re-renders
+// after mount. The render counter stays at 1 even as you click buttons.
+// -----------------------------------------------------------------------------
+// 🔑 Same outcome as the split-context ThemeSetterContext from
+// /lessons/context-provider, but achieved WITHOUT splitting anything. The
+// granularity lives in the selector, not in the provider topology.
 // =============================================================================
 
 import { RenderBadge, useRenderCount } from '../../_components/render-counter';
-import { useThemeSetter, type Theme } from './theme-provider';
+import { useThemeStore, type Theme } from './theme-store';
 
 const THEMES: Theme[] = ['dark', 'light', 'amber'];
 
@@ -19,25 +24,25 @@ const SWATCH: Record<Theme, string> = {
 };
 
 export default function ThemeControls({
-    setterLabel,
-    setterNote,
+    writerLabel,
+    writerNote,
     themeLabel,
     themes,
     renderLabel,
 }: {
-    setterLabel: string;
-    setterNote: string;
+    writerLabel: string;
+    writerNote: string;
     themeLabel: string;
     themes: Record<Theme, string>;
     renderLabel: string;
 }) {
-    const setTheme = useThemeSetter();
+    const setTheme = useThemeStore(s => s.setTheme);
     const renders = useRenderCount();
     return (
         <div className='rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4 text-slate-200'>
             <div className='mb-3 flex items-start justify-between gap-2'>
                 <span className='min-w-0 text-[11px] font-semibold tracking-wide text-emerald-300 uppercase'>
-                    {setterLabel}
+                    {writerLabel}
                 </span>
                 <RenderBadge label={renderLabel} count={renders} />
             </div>
@@ -61,7 +66,7 @@ export default function ThemeControls({
                 ))}
             </div>
             <p className='mt-3 border-t border-emerald-500/20 pt-2 text-xs leading-relaxed text-slate-400'>
-                {setterNote}
+                {writerNote}
             </p>
         </div>
     );

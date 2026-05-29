@@ -1,48 +1,46 @@
 'use client';
 // =============================================================================
-// app/lessons/context-provider/_components/theme-combined.tsx
-// ANTI-PATTERN COMPARISON — uses the convenience hook `useTheme()` which reads
-// BOTH contexts. The component intentionally only NEEDS setTheme to do its job
-// (the same buttons as ThemeControls), but the StateContext subscription drags
-// it into every theme change. Watch this render counter climb in lockstep with
-// ThemePreview's, even though we never read `theme` for rendering.
+// app/lessons/zustand-store/_components/theme-bulk.tsx
+// ANTI-PATTERN — selector returns the ENTIRE state object.
+// Re-renders on every store mutation because Zustand's Object.is comparison
+// finds the new state object is a different reference. Even mutations to
+// fields this component never reads (none in Theme, but imagine a future
+// `lastChangedAt` field) would re-render it.
 // -----------------------------------------------------------------------------
-// 🧠 The fix is not to memoise the return of useTheme(): the re-render is
-// caused by the subscription itself, not by the object reference. The fix is
-// to call the granular hook (useThemeSetter) — see ThemeControls.
+// 🧠 Mental model: write selectors that return the MINIMUM data this consumer
+// actually uses. If you need many fields, prefer multiple narrow selectors
+// over `s => s` or `s => ({ a, b })` (the second form creates a NEW object on
+// every read, so Object.is always returns false → infinite re-renders unless
+// you use `useShallow`).
 // =============================================================================
 
 import { RenderBadge, useRenderCount } from '../../_components/render-counter';
-import { useTheme, type Theme } from './theme-provider';
+import { useThemeStore, type Theme } from './theme-store';
 
 const THEMES: Theme[] = ['dark', 'light', 'amber'];
 
-export default function ThemeCombined({
-    combinedLabel,
-    combinedNote,
+export default function ThemeBulk({
+    bulkLabel,
+    bulkNote,
     themeLabel,
     themes,
     renderLabel,
 }: {
-    combinedLabel: string;
-    combinedNote: string;
+    bulkLabel: string;
+    bulkNote: string;
     themeLabel: string;
     themes: Record<Theme, string>;
     renderLabel: string;
 }) {
-    // Same job as ThemeControls (we just want to set the theme), but via the
-    // "combined" convenience hook. We don't read `theme` for rendering, yet
-    // useTheme() internally calls useThemeState() which subscribes us to the
-    // StateContext — that subscription alone is enough to re-render us on
-    // every theme change. The lesson: granular hooks beat convenience hooks
-    // when consumers only need part of the value.
-    const { setTheme } = useTheme();
+    // Subscribing to the whole state. Re-renders on every set() call —
+    // even if the field we actually use (setTheme) never changes.
+    const state = useThemeStore(s => s);
     const renders = useRenderCount();
     return (
         <div className='rounded-lg border border-rose-500/30 bg-rose-500/5 p-4 text-slate-200'>
             <div className='mb-3 flex items-start justify-between gap-2'>
                 <span className='min-w-0 text-[11px] font-semibold tracking-wide text-rose-300 uppercase'>
-                    {combinedLabel}
+                    {bulkLabel}
                 </span>
                 <RenderBadge label={renderLabel} count={renders} />
             </div>
@@ -54,7 +52,7 @@ export default function ThemeCombined({
                     <button
                         key={t}
                         type='button'
-                        onClick={() => setTheme(t)}
+                        onClick={() => state.setTheme(t)}
                         className='inline-flex items-center gap-2 rounded-md border border-slate-700/60 bg-slate-900/50 px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:border-rose-400/60 hover:bg-rose-500/10'
                     >
                         {themes[t]}
@@ -62,7 +60,7 @@ export default function ThemeCombined({
                 ))}
             </div>
             <p className='mt-3 border-t border-rose-500/20 pt-2 text-xs leading-relaxed text-slate-400'>
-                {combinedNote}
+                {bulkNote}
             </p>
         </div>
     );

@@ -140,7 +140,7 @@ const it: Dictionary = {
                 {
                     slug: 'zustand-store',
                     label: 'Zustand Store',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'tanstack-query',
@@ -290,7 +290,7 @@ const en: Dictionary = {
                 {
                     slug: 'zustand-store',
                     label: 'Zustand Store',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'tanstack-query',
@@ -439,7 +439,7 @@ const uk: Dictionary = {
                 {
                     slug: 'zustand-store',
                     label: 'Zustand Store',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'tanstack-query',
