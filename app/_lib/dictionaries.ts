@@ -112,7 +112,7 @@ const it: Dictionary = {
                 {
                     slug: 'server-fetching',
                     label: 'Server Fetching',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'caching', label: 'Caching', status: 'locked' },
                 {
@@ -262,7 +262,7 @@ const en: Dictionary = {
                 {
                     slug: 'server-fetching',
                     label: 'Server Fetching',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'caching', label: 'Caching', status: 'locked' },
                 {
@@ -411,7 +411,7 @@ const uk: Dictionary = {
                 {
                     slug: 'server-fetching',
                     label: 'Server Fetching',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'caching', label: 'Кешування', status: 'locked' },
                 {
