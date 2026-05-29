@@ -99,7 +99,7 @@ const it: Dictionary = {
                 {
                     slug: 'loading-and-errors',
                     label: 'Loading & Errors',
-                    status: 'locked',
+                    status: 'done',
                 },
             ],
         },
@@ -249,7 +249,7 @@ const en: Dictionary = {
                 {
                     slug: 'loading-and-errors',
                     label: 'Loading & Errors',
-                    status: 'locked',
+                    status: 'done',
                 },
             ],
         },
@@ -398,7 +398,7 @@ const uk: Dictionary = {
                 {
                     slug: 'loading-and-errors',
                     label: 'Loading & Errors',
-                    status: 'locked',
+                    status: 'done',
                 },
             ],
         },
