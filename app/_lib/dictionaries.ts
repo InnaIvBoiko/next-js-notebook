@@ -92,9 +92,9 @@ const it: Dictionary = {
                     status: 'done',
                 },
                 {
-                    slug: 'dynamic-routes/[id]',
+                    slug: 'dynamic-routes',
                     label: 'Rotte dinamiche',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'loading-and-errors',
@@ -242,9 +242,9 @@ const en: Dictionary = {
                     status: 'done',
                 },
                 {
-                    slug: 'dynamic-routes/[id]',
+                    slug: 'dynamic-routes',
                     label: 'Dynamic Routes',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'loading-and-errors',
@@ -391,9 +391,9 @@ const uk: Dictionary = {
                     status: 'done',
                 },
                 {
-                    slug: 'dynamic-routes/[id]',
+                    slug: 'dynamic-routes',
                     label: 'Динамічні маршрути',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'loading-and-errors',
