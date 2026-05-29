@@ -1,31 +1,8 @@
-'use client';
-// Lesson-scoped language Context for /server-actions/*.
+// =============================================================================
+// app/lessons/server-actions/_components/lang-provider.tsx
+// Thin re-export of the SHARED language context, which now lives at
+// app/lessons/_components/lang-provider.tsx and is mounted once in
+// app/lessons/layout.tsx. See /lessons/context-provider for the lift refactor.
+// =============================================================================
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { Lang } from '../../../_lib/dictionaries';
-
-type LangContextValue = {
-    lang: Lang;
-    setLang: (l: Lang) => void;
-};
-
-const LangContext = createContext<LangContextValue | null>(null);
-
-export default function LangProvider({ children }: { children: ReactNode }) {
-    const [lang, setLang] = useState<Lang>('it');
-    return (
-        <LangContext.Provider value={{ lang, setLang }}>
-            {children}
-        </LangContext.Provider>
-    );
-}
-
-export function useLessonLang(): LangContextValue {
-    const ctx = useContext(LangContext);
-    if (ctx === null) {
-        throw new Error(
-            'useLessonLang must be used inside <LangProvider> (app/lessons/server-actions/layout.tsx).',
-        );
-    }
-    return ctx;
-}
+export { useLessonLang } from '../../_components/lang-provider';

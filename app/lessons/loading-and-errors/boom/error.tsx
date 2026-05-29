@@ -18,9 +18,12 @@
 // 🧠 WHY THE PARENT LAYOUT STAYS ALIVE
 // error.tsx wraps loading.tsx, not-found.tsx, page.tsx, and any nested layouts
 // — but NOT the layout in the SAME segment. So when /boom/page.tsx throws:
-//   • /lessons/layout.tsx → still mounted (the green "layout clicks" pill survives)
-//   • /lessons/loading-and-errors/layout.tsx → still mounted (LangBar survives)
+//   • /lessons/layout.tsx → still mounted (LangBar + "layout clicks" pill survive)
 //   • /boom/page.tsx → replaced by this fallback
+//
+// (Module 3, Lesson 1 lifted the LangProvider from this lesson's layout up to
+// /lessons/layout.tsx — there is no longer a dedicated loading-and-errors
+// layout segment; the parent /lessons layout serves directly.)
 //
 // 📚 Doc: node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md
 // =============================================================================
@@ -28,11 +31,10 @@
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { content } from '../_lib/content';
-// We cannot use useLessonLang() here because if the LangProvider itself ever
-// threw, this boundary would catch it and the Context would be unavailable.
-// Defaulting to English is safe and self-contained. The persistent <LangBar>
-// in the lesson layout (which is ABOVE this boundary) still reflects the
-// user's actual choice.
+// We hard-default to English here. Although the upstream <LangProvider> lives
+// above this boundary and would technically be readable, keeping this fallback
+// independent of any Context is a defensive pattern: if a future refactor
+// moved the provider below an error boundary, this file would still render.
 
 type ErrorWithDigest = Error & { digest?: string };
 

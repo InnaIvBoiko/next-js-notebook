@@ -135,7 +135,7 @@ const it: Dictionary = {
                 {
                     slug: 'context-provider',
                     label: 'Context Provider',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'zustand-store',
@@ -285,7 +285,7 @@ const en: Dictionary = {
                 {
                     slug: 'context-provider',
                     label: 'Context Provider',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'zustand-store',
@@ -434,7 +434,7 @@ const uk: Dictionary = {
                 {
                     slug: 'context-provider',
                     label: 'Context Provider',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'zustand-store',
