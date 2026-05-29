@@ -105,6 +105,10 @@ export default function MainView() {
                         <p className='mb-2 text-xs font-semibold tracking-wide text-amber-300 uppercase'>
                             {t.sections.linkVsAnchor.badLabel}
                         </p>
+                        {/* INTENTIONAL plain <a>: this is the "bad" side
+                            of the §3 Link vs <a> demo. Disabling Next's
+                            ESLint rule for this single line. */}
+                        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                         <a
                             href='/'
                             className='inline-block rounded-md bg-amber-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-amber-400'

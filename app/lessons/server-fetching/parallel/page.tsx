@@ -17,6 +17,7 @@
 // =============================================================================
 
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
 import DemoHeader from '../_components/demo-header';
 import { getUsers, getPosts, type User, type Post } from '../_lib/local-data';
 
@@ -43,6 +44,10 @@ async function runParallel() {
 }
 
 export default async function ParallelDemoPage() {
+    // Required by cacheComponents: true. The page measures elapsed time
+    // via Date.now() inside runSequential/runParallel.
+    await connection();
+
     // Run them serially to time each block independently. In a real page you
     // would NOT do both — pick one strategy per data dependency.
     const seq = await runSequential();

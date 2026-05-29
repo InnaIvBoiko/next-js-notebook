@@ -23,6 +23,7 @@
 // =============================================================================
 
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
 import DemoHeader from '../_components/demo-header';
 
 export const metadata: Metadata = {
@@ -56,6 +57,11 @@ async function fetchPosts(label: string): Promise<FetchResult> {
 }
 
 export default async function DefaultDemoPage() {
+    // Required by cacheComponents: true. The page reads new Date() and
+    // Date.now() (inside fetchPosts), so Next needs an explicit dynamic
+    // signal to skip prerendering.
+    await connection();
+
     const fetchedAt = new Date().toISOString();
 
     // Two identical fetch calls. React's memoization makes these collapse into

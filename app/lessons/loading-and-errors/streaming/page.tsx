@@ -19,6 +19,7 @@
 // =============================================================================
 
 import { Suspense } from 'react';
+import { connection } from 'next/server';
 import type { Metadata } from 'next';
 import DemoHeader from '../_components/demo-header';
 import { delay } from '../_lib/delay';
@@ -34,6 +35,9 @@ export const metadata: Metadata = {
 // -----------------------------------------------------------------------------
 
 async function FastSection() {
+    // connection() per leaf (cacheComponents: true) — Next needs the signal
+    // before any non-deterministic read like new Date().
+    await connection();
     await delay(1000);
     // We use English for inline section copy; the multilingual prose comes
     // from <DemoHeader/> above. We could pass lang via search params, but it
@@ -53,6 +57,7 @@ async function FastSection() {
 }
 
 async function SlowSection() {
+    await connection();
     await delay(3000);
     return (
         <div className='rounded-lg border border-rose-500/20 bg-rose-500/5 p-4'>

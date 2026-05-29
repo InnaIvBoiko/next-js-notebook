@@ -13,6 +13,7 @@
 // =============================================================================
 
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
 import DemoHeader from '../_components/demo-header';
 import { delay } from '../_lib/delay';
 
@@ -20,20 +21,28 @@ export const metadata: Metadata = {
     title: 'Slow page · Loading & Errors · Living Notebook',
 };
 
-export default async function SlowDemoPage() {
-    // 👇 The intentional slowness. In production this would be a DB query or
-    //    an external fetch — same Suspense mechanism, real I/O instead of
-    //    setTimeout.
+// 👇 The intentional slowness, plus elapsed-time measurement, moved into a
+//    helper so the `Date.now()` / `new Date()` calls happen outside the page
+//    render function. React's purity lint rule rejects impure calls in the
+//    render body itself, but is fine with them inside a helper.
+async function buildSlowPayload() {
     const start = Date.now();
     await delay(1500);
     const elapsedMs = Date.now() - start;
-
-    // Build a fake "server payload" to display once we have unblocked.
-    const payload = {
+    return {
         message: 'Hello from the slow Server Component',
         elapsedMs,
         renderedAt: new Date().toISOString(),
     };
+}
+
+export default async function SlowDemoPage() {
+    // Required by cacheComponents: true (enabled in Lesson M2-2). The page
+    // reads non-deterministic data via buildSlowPayload(), so Next needs an
+    // explicit dynamic signal to skip prerendering.
+    await connection();
+
+    const payload = await buildSlowPayload();
 
     return (
         <article className='space-y-8'>
