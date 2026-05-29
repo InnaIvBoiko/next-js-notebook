@@ -118,7 +118,7 @@ const it: Dictionary = {
                 {
                     slug: 'server-actions',
                     label: 'Server Actions',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'action-pending',
@@ -268,7 +268,7 @@ const en: Dictionary = {
                 {
                     slug: 'server-actions',
                     label: 'Server Actions',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'action-pending',
@@ -417,7 +417,7 @@ const uk: Dictionary = {
                 {
                     slug: 'server-actions',
                     label: 'Server Actions',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'action-pending',
