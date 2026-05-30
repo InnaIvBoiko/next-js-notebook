@@ -15,72 +15,71 @@
 // Why split? With a single `{ lang, setLang }` value, every Context.Provider
 // `value` is a NEW object on each render, which forces ALL consumers to
 // re-render even if they only read `setLang`. Splitting the contexts is the
-// classic React performance fix — and it's the conceptual bridge to selector
-// libraries like Zustand (next lesson).
+// classic React performance fix.
 //
 // 🧠 PROVIDER PLACEMENT
 // This provider lives at `app/lessons/layout.tsx`, which means the React
 // instance is preserved across navigation between sibling lessons. Switching
 // language in /lessons/caching persists into /lessons/server-actions.
 //
-// 🧠 PERSISTENCE — sessionStorage with a sync useEffect
-// We initialise from the BASE language ('it') on the server / first client
-// render to avoid hydration mismatches (the server cannot read sessionStorage),
-// then on mount we read sessionStorage and update if a saved value exists.
-// This causes a brief "flicker" if the user previously picked a non-base lang —
-// that flicker is intentional teaching material for the next lesson, where
-// cookies (readable on the server) will eliminate it.
+// 🧠 PERSISTENCE — cookie-first (Module 4 · Lesson 4 refactor)
+// The proxy at `/proxy.ts` sniffs `Accept-Language` and writes the `nb-lang`
+// cookie on first visit. The lessons layout reads that cookie SERVER-SIDE
+// via `cookies()` and passes it down as `initialLang`. The provider uses
+// it as the initial state — SSR and client agree on the same language from
+// render 0 → NO MORE hydration mismatch.
+//
+// When the user changes language via <LangBar>, we write the cookie back
+// from the client (`document.cookie`) so the NEXT server render uses the
+// new value. We also keep sessionStorage as a tiny belt-and-suspenders
+// fallback for cases where cookies are disabled.
 // =============================================================================
 
 import {
     createContext,
     useCallback,
     useContext,
-    useEffect,
     useState,
     type ReactNode,
 } from 'react';
 import type { Lang } from '../../_lib/dictionaries';
 
+const COOKIE_NAME = 'nb-lang';
 const STORAGE_KEY = 'living-notebook:lang';
 
 const LangStateContext = createContext<Lang | null>(null);
 const LangSetterContext = createContext<((l: Lang) => void) | null>(null);
 
-export function LangProvider({ children }: { children: ReactNode }) {
-    const [lang, setLangRaw] = useState<Lang>('it');
-
-    // Mount-time hydration from sessionStorage. Runs ONCE per browser session.
-    // Wrapped in try/catch because sessionStorage can throw in private windows
-    // or when storage quota is exceeded.
-    //
-    // 🛑 react-hooks/set-state-in-effect — disabled intentionally.
-    // sessionStorage is a browser-only API, so we cannot read it during the
-    // useState initialiser without breaking SSR/CSR hydration parity (the
-    // server would have no saved value). The "cascading render" that the rule
-    // warns about IS the flicker that Module 3 · Lesson 1 explains and that
-    // we'll fix in /advanced-routing with cookies (which the server can read).
-    useEffect(() => {
-        try {
-            const saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved === 'it' || saved === 'en' || saved === 'uk') {
-                // eslint-disable-next-line react-hooks/set-state-in-effect -- browser-only hydration
-                setLangRaw(saved);
-            }
-        } catch {
-            /* sessionStorage unavailable — fall back to in-memory state */
-        }
-    }, []);
+export function LangProvider({
+    initialLang,
+    children,
+}: {
+    initialLang: Lang;
+    children: ReactNode;
+}) {
+    // ✨ The initial value comes from the server, derived from the
+    // `nb-lang` cookie. SSR HTML and client first render now agree
+    // — no more useEffect "flicker", no more hydration mismatch.
+    const [lang, setLangRaw] = useState<Lang>(initialLang);
 
     // Stable setter wrapped in useCallback so the SetterContext value is
     // referentially stable across re-renders. Without this, every render
     // would publish a new function and defeat the split-context optimisation.
     const setLang = useCallback((next: Lang) => {
         setLangRaw(next);
+        // Persist to BOTH cookie (so the next SSR sees it) AND sessionStorage
+        // (defensive: works even if the user disabled cookies). The cookie
+        // matches the proxy's expectations: name `nb-lang`, path /, 1y maxAge.
+        try {
+            const oneYear = 60 * 60 * 24 * 365;
+            document.cookie = `${COOKIE_NAME}=${next}; Path=/; Max-Age=${oneYear}; SameSite=Lax`;
+        } catch {
+            /* ignore — older browsers, file:// scheme */
+        }
         try {
             sessionStorage.setItem(STORAGE_KEY, next);
         } catch {
-            /* ignore — state still updates in memory */
+            /* sessionStorage unavailable — cookie still in place */
         }
     }, []);
 

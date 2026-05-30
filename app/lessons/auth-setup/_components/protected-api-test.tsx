@@ -45,7 +45,6 @@ export default function ProtectedApiTest() {
                 onClick={call}
                 disabled={isCalling}
                 className='inline-flex items-center gap-2 rounded-md border border-sky-500/50 bg-sky-500/15 px-3 py-1.5 text-xs font-medium text-sky-100 transition-colors hover:bg-sky-500/25 disabled:cursor-not-allowed disabled:opacity-60'
-                suppressHydrationWarning
             >
                 {isCalling ? labels.callingLabel : labels.callLabel}
             </button>
@@ -53,7 +52,6 @@ export default function ProtectedApiTest() {
                 <div className='flex items-center gap-2 text-[11px]'>
                     <span
                         className='text-slate-400 uppercase'
-                        suppressHydrationWarning
                     >
                         {labels.statusLabel}
                     </span>
@@ -74,7 +72,6 @@ export default function ProtectedApiTest() {
                 <div className='space-y-1'>
                     <span
                         className='block text-[10px] tracking-wide text-slate-500 uppercase'
-                        suppressHydrationWarning
                     >
                         {labels.responseLabel}
                     </span>

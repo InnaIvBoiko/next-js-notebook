@@ -247,7 +247,7 @@ async function getCachedNotes() {
             "Terminale di `npm run dev`: la prima richiesta DB stampa la creazione delle tabelle + il seed. Successive richieste sono silenziose — il `dbReady` promise è risolta una sola volta.",
             "Elimina una nota: la tabella `note_tags` si pulisce automaticamente grazie a `ON DELETE CASCADE`. Nessun codice applicativo cancella i tag — è Postgres a farlo.",
             "Reset al seed (bottone Lab 2): rivedi i 3 record originali con i loro tag. Le ID partono da numeri PIÙ ALTI perché SERIAL non viene resettato dal DELETE (lo sarebbe da `TRUNCATE ... RESTART IDENTITY`).",
-            "⚠️ Caveat hydration: due elementi del Lab 1 (`DeleteNoteButton`, `EmptyState`) hanno `suppressHydrationWarning`. Motivo: vivono dentro un `<Suspense>` streamato, e il `<LangProvider>` (che usa `sessionStorage`) può aver già cambiato lingua sul client prima che il contenuto streamato venga idratato. Il fix architetturale corretto è la persistenza via COOKIE (leggibile lato server) — copertura prevista in Modulo 5 · /advanced-routing.",
+            "✅ Hydration: nessun `suppressHydrationWarning` su questa pagina. Il `<LangProvider>` ora legge la lingua dal cookie `nb-lang` server-side (fix introdotto in Mod. 4 · Lez. 4, vedi /lessons/middleware-logic). SSR e client partono dalla stessa lingua, niente flicker nel contenuto streamato.",
         ],
     },
 };
@@ -444,7 +444,7 @@ async function getCachedNotes() {
             "Terminal running `npm run dev`: the first DB request prints table creation + the seed. Subsequent requests are silent — the `dbReady` promise resolves once.",
             "Delete a note: the `note_tags` table cleans itself up thanks to `ON DELETE CASCADE`. No application code deletes tags — Postgres does it.",
             "Reset to seed (Lab 2 button): you see the original 3 records with their tags. IDs start from HIGHER numbers because SERIAL doesn't reset on DELETE (it would with `TRUNCATE ... RESTART IDENTITY`).",
-            "⚠️ Hydration caveat: two Lab 1 elements (`DeleteNoteButton`, `EmptyState`) carry `suppressHydrationWarning`. Reason: they live inside a streamed `<Suspense>` and the `<LangProvider>` (sessionStorage-backed) may have already switched language on the client by the time the streamed content hydrates. The proper architectural fix is COOKIE-based persistence (server-readable) — coming in Module 5 · /advanced-routing.",
+            "✅ Hydration: no `suppressHydrationWarning` on this page. `<LangProvider>` now reads the language from the `nb-lang` cookie server-side (fix introduced in Module 4 · Lesson 4, see /lessons/middleware-logic). SSR and client start with the same language, no flicker in the streamed content.",
         ],
     },
 };
@@ -641,7 +641,7 @@ async function getCachedNotes() {
             "Термінал `npm run dev`: перший запит до БД друкує створення таблиць + seed. Наступні запити мовчазні — `dbReady` promise resolve-нута один раз.",
             "Видали нотатку: таблиця `note_tags` чиститься автоматично завдяки `ON DELETE CASCADE`. Application-код не видаляє теги — це робить Postgres.",
             "Reset до seed (кнопка Lab 2): бачиш 3 оригінальні записи з тегами. ID починаються з ВИЩИХ чисел, бо SERIAL не скидається на DELETE (тільки на `TRUNCATE ... RESTART IDENTITY`).",
-            "⚠️ Hydration caveat: два елементи Lab 1 (`DeleteNoteButton`, `EmptyState`) мають `suppressHydrationWarning`. Причина: вони живуть всередині streamed `<Suspense>`, а `<LangProvider>` (на sessionStorage) міг уже переключити мову на клієнті до того, як streamed контент гідратується. Правильний архітектурний фікс — персистенція через COOKIE (читабельну з сервера) — буде в Модулі 5 · /advanced-routing.",
+            "✅ Hydration: жодного `suppressHydrationWarning` на цій сторінці. `<LangProvider>` тепер читає мову з cookie `nb-lang` server-side (фікс введений у Модулі 4 · Лекції 4, див. /lessons/middleware-logic). SSR і клієнт починають з тієї самої мови, без flicker у streamed контенті.",
         ],
     },
 };

@@ -163,8 +163,8 @@ const it: Dictionary = {
                 { slug: 'auth-setup', label: 'Auth.js', status: 'done' },
                 {
                     slug: 'middleware-logic',
-                    label: 'Middleware',
-                    status: 'locked',
+                    label: 'Proxy (middleware)',
+                    status: 'done',
                 },
             ],
         },
@@ -313,8 +313,8 @@ const en: Dictionary = {
                 { slug: 'auth-setup', label: 'Auth.js', status: 'done' },
                 {
                     slug: 'middleware-logic',
-                    label: 'Middleware',
-                    status: 'locked',
+                    label: 'Proxy (middleware)',
+                    status: 'done',
                 },
             ],
         },
@@ -462,8 +462,8 @@ const uk: Dictionary = {
                 { slug: 'auth-setup', label: 'Auth.js', status: 'done' },
                 {
                     slug: 'middleware-logic',
-                    label: 'Middleware',
-                    status: 'locked',
+                    label: 'Proxy (middleware)',
+                    status: 'done',
                 },
             ],
         },

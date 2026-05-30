@@ -49,7 +49,6 @@ export default function CredentialsForms({
             >
                 <p
                     className='text-[10px] tracking-wide text-slate-500 uppercase'
-                    suppressHydrationWarning
                 >
                     {labels.demoCredsLabel}: {DEMO_USER.email} ·{' '}
                     {DEMO_USER.password}
@@ -61,7 +60,6 @@ export default function CredentialsForms({
                     defaultValue={DEMO_USER.email}
                     placeholder={labels.emailPlaceholder}
                     className='w-full rounded-md border border-slate-700 bg-slate-900/60 px-2 py-1.5 text-sm text-slate-100'
-                    suppressHydrationWarning
                 />
                 <input
                     type='password'
@@ -70,7 +68,6 @@ export default function CredentialsForms({
                     defaultValue={DEMO_USER.password}
                     placeholder={labels.passwordPlaceholder}
                     className='w-full rounded-md border border-slate-700 bg-slate-900/60 px-2 py-1.5 text-sm text-slate-100'
-                    suppressHydrationWarning
                 />
                 {signInState?.error && (
                     <p className='rounded border border-rose-500/40 bg-rose-500/10 px-2 py-1 text-[11px] text-rose-200'>
@@ -95,14 +92,12 @@ export default function CredentialsForms({
                     required
                     placeholder={labels.emailPlaceholder}
                     className='w-full rounded-md border border-slate-700 bg-slate-900/60 px-2 py-1.5 text-sm text-slate-100'
-                    suppressHydrationWarning
                 />
                 <input
                     type='text'
                     name='name'
                     placeholder={labels.namePlaceholder}
                     className='w-full rounded-md border border-slate-700 bg-slate-900/60 px-2 py-1.5 text-sm text-slate-100'
-                    suppressHydrationWarning
                 />
                 <input
                     type='password'
@@ -111,7 +106,6 @@ export default function CredentialsForms({
                     minLength={6}
                     placeholder={labels.passwordPlaceholder}
                     className='w-full rounded-md border border-slate-700 bg-slate-900/60 px-2 py-1.5 text-sm text-slate-100'
-                    suppressHydrationWarning
                 />
                 {signUpState?.error && (
                     <p className='rounded border border-rose-500/40 bg-rose-500/10 px-2 py-1 text-[11px] text-rose-200'>
@@ -121,7 +115,6 @@ export default function CredentialsForms({
                 {signUpState?.ok && (
                     <p
                         className='rounded border border-emerald-500/40 bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-200'
-                        suppressHydrationWarning
                     >
                         {labels.signUpSuccessLabel}
                     </p>
@@ -155,7 +148,6 @@ function SubmitButton({
             type='submit'
             disabled={pending}
             className={`w-full rounded-md border px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${palette}`}
-            suppressHydrationWarning
         >
             {pending ? pendingLabel : idleLabel}
         </button>
