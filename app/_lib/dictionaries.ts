@@ -145,7 +145,7 @@ const it: Dictionary = {
                 {
                     slug: 'tanstack-query',
                     label: 'TanStack Query',
-                    status: 'locked',
+                    status: 'done',
                 },
             ],
         },
@@ -295,7 +295,7 @@ const en: Dictionary = {
                 {
                     slug: 'tanstack-query',
                     label: 'TanStack Query',
-                    status: 'locked',
+                    status: 'done',
                 },
             ],
         },
@@ -444,7 +444,7 @@ const uk: Dictionary = {
                 {
                     slug: 'tanstack-query',
                     label: 'TanStack Query',
-                    status: 'locked',
+                    status: 'done',
                 },
             ],
         },
