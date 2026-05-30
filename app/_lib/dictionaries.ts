@@ -154,7 +154,7 @@ const it: Dictionary = {
             title: 'Full-Stack',
             description: 'API, database, autenticazione e middleware.',
             lessons: [
-                { slug: 'api-routes', label: 'API Routes', status: 'locked' },
+                { slug: 'api-routes', label: 'API Routes', status: 'done' },
                 {
                     slug: 'database-orm',
                     label: 'Database & ORM',
@@ -304,7 +304,7 @@ const en: Dictionary = {
             title: 'Full-Stack',
             description: 'APIs, database, authentication and middleware.',
             lessons: [
-                { slug: 'api-routes', label: 'API Routes', status: 'locked' },
+                { slug: 'api-routes', label: 'API Routes', status: 'done' },
                 {
                     slug: 'database-orm',
                     label: 'Database & ORM',
@@ -453,7 +453,7 @@ const uk: Dictionary = {
             title: 'Full-Stack',
             description: 'API, бази даних, автентифікація та middleware.',
             lessons: [
-                { slug: 'api-routes', label: 'API Routes', status: 'locked' },
+                { slug: 'api-routes', label: 'API Routes', status: 'done' },
                 {
                     slug: 'database-orm',
                     label: 'Database & ORM',
