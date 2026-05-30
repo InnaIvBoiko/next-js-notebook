@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
     //     continue to work — they just stay dynamic and uncached.
     // 📚 Doc: node_modules/next/dist/docs/01-app/01-getting-started/08-caching.md
     cacheComponents: true,
+
+    // 🧠 SERVER-EXTERNAL PACKAGES — used by Module 4 · Lesson 2 (/database-orm).
+    // `@electric-sql/pglite` ships a WASM Postgres engine + native deps that
+    // must run under Node's `require`, not Next's bundler. Without this flag
+    // the build tries to bundle the WASM and fails. Drizzle ORM is fine to
+    // bundle, only the underlying PGlite driver needs to be external.
+    // 📚 Doc: node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/serverExternalPackages.md
+    serverExternalPackages: ['@electric-sql/pglite'],
 };
 
 export default nextConfig;

@@ -158,7 +158,7 @@ const it: Dictionary = {
                 {
                     slug: 'database-orm',
                     label: 'Database & ORM',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'auth-setup', label: 'Auth.js', status: 'locked' },
                 {
@@ -308,7 +308,7 @@ const en: Dictionary = {
                 {
                     slug: 'database-orm',
                     label: 'Database & ORM',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'auth-setup', label: 'Auth.js', status: 'locked' },
                 {
@@ -457,7 +457,7 @@ const uk: Dictionary = {
                 {
                     slug: 'database-orm',
                     label: 'Database & ORM',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'auth-setup', label: 'Auth.js', status: 'locked' },
                 {

@@ -122,9 +122,9 @@ async function Page() {
 }
 
 // ✅ Server Component → chiama direttamente lo strato dati
-import { listNotes } from '@/app/api/notes/_store';
+import { listNotesWithTags } from '@/app/_db/queries';
 async function Page() {
-  const notes = listNotes();   // zero HTTP, zero JSON, zero overhead
+  const notes = await listNotesWithTags();   // zero HTTP, zero JSON, zero overhead
   return <List notes={notes} />;
 }
 
@@ -330,9 +330,9 @@ async function Page() {
 }
 
 // ✅ Server Component → call the data layer directly
-import { listNotes } from '@/app/api/notes/_store';
+import { listNotesWithTags } from '@/app/_db/queries';
 async function Page() {
-  const notes = listNotes();   // zero HTTP, zero JSON, zero overhead
+  const notes = await listNotesWithTags();   // zero HTTP, zero JSON, zero overhead
   return <List notes={notes} />;
 }
 

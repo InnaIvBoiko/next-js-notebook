@@ -20,10 +20,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
 type Note = {
-    id: string;
+    // Note: IDs are integers since Module 4 · Lesson 2 (Drizzle + PGlite).
+    // Lesson 1 used opaque string IDs from an in-memory store; this lab now
+    // talks to a real Postgres `SERIAL` column.
+    id: number;
     title: string;
     body: string;
     createdAt: string;
+    tags?: { id: number; label: string }[];
 };
 
 type NotesLabels = {
@@ -47,7 +51,7 @@ export default function NotesLab({ labels }: { labels: NotesLabels }) {
     const [notes, setNotes] = useState<Note[]>([]);
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
-    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
     const [editTitle, setEditTitle] = useState('');
     const [editBody, setEditBody] = useState('');
     const [isPending, setIsPending] = useState(false);
@@ -121,7 +125,7 @@ export default function NotesLab({ labels }: { labels: NotesLabels }) {
         setEditBody(note.body);
     }
 
-    async function save(id: string) {
+    async function save(id: number) {
         setIsPending(true);
         try {
             await call('PATCH', `/api/notes/${id}`, {
@@ -135,7 +139,7 @@ export default function NotesLab({ labels }: { labels: NotesLabels }) {
         }
     }
 
-    async function remove(id: string) {
+    async function remove(id: number) {
         await call('DELETE', `/api/notes/${id}`);
         await refresh();
     }

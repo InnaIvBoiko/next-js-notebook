@@ -1,8 +1,8 @@
 // =============================================================================
 // app/api/notes/route.ts
 // Collection-level endpoint:
-//   GET  /api/notes        → list all notes
-//   POST /api/notes        → create one (JSON body: { title, body })
+//   GET  /api/notes        → list all notes (with tags)
+//   POST /api/notes        → create one (JSON body: { title, body?, tags? })
 // -----------------------------------------------------------------------------
 // 🧠 Status codes that matter (and why)
 //   • 200 OK      — successful read
@@ -12,21 +12,26 @@
 //                              don't export (e.g. someone sends DELETE here).
 //
 // 🧠 We DO NOT export DELETE here on purpose: the catch-all 405 from Next is
-// part of the Debugging Lab — open DevTools, send a DELETE, watch the 405.
+// part of Lesson 1's Debugging Lab — open DevTools, send a DELETE, watch the
+// 405 + Allow header.
 //
-// 🧠 Why we don't `revalidatePath('/api/notes')`
-// In Cache Components mode, GET handlers run at request time by default — so
-// there's nothing to invalidate. The Notes lab is purely live: every list
-// refetch hits the handler fresh. If we wanted these reads cached, we'd wrap
-// `listNotes()` in a `'use cache'` helper and call `updateTag()` after
-// mutations (Module 2 · Lesson 2 pattern).
+// 🧠 Module 4 · Lesson 2 — backed by a real database
+// The in-memory `_store.ts` of Lesson 1 has been replaced with PGlite +
+// Drizzle queries. The route contracts are identical (clients don't notice)
+// EXCEPT: IDs are now integers, and each note carries a `tags: { id, label }[]`
+// array surfaced by Drizzle's relational query API.
 // =============================================================================
 
 import type { NextRequest } from 'next/server';
-import { createNote, listNotes, resetNotes } from './_store';
+import {
+    createNote,
+    listNotesWithTags,
+    resetNotes,
+} from '../../_db/queries';
 
 export async function GET() {
-    return Response.json({ notes: listNotes() });
+    const notes = await listNotesWithTags();
+    return Response.json({ notes });
 }
 
 export async function POST(request: NextRequest) {
@@ -40,26 +45,50 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Inline shape-checking. In Module 4 · Lesson 2 we'll replace this with
-    // a Zod schema — it's the same idea, just declarative.
+    // Inline shape-checking. Lesson 1 promised Lesson 2 would switch to Zod —
+    // we keep manual validation here on purpose to stay focused on the DB
+    // layer; Zod arrives in Module 5 alongside form validation.
     if (
         !payload ||
         typeof payload !== 'object' ||
-        typeof (payload as { title?: unknown }).title !== 'string' ||
-        typeof (payload as { body?: unknown }).body !== 'string'
+        typeof (payload as { title?: unknown }).title !== 'string'
     ) {
         return Response.json(
-            { error: 'Expected { title: string, body: string }.' },
+            { error: 'Expected { title: string, body?: string, tags?: string[] }.' },
             { status: 400 },
         );
     }
 
-    const { title, body } = payload as { title: string; body: string };
+    const { title, body, tags } = payload as {
+        title: string;
+        body?: unknown;
+        tags?: unknown;
+    };
     if (title.trim().length === 0) {
         return Response.json({ error: 'Title cannot be empty.' }, { status: 400 });
     }
+    if (body !== undefined && typeof body !== 'string') {
+        return Response.json(
+            { error: '`body` must be a string when provided.' },
+            { status: 400 },
+        );
+    }
+    if (
+        tags !== undefined &&
+        (!Array.isArray(tags) || tags.some(t => typeof t !== 'string'))
+    ) {
+        return Response.json(
+            { error: '`tags` must be a string[] when provided.' },
+            { status: 400 },
+        );
+    }
 
-    const note = createNote({ title: title.trim(), body });
+    const note = await createNote({
+        title: title.trim(),
+        body: typeof body === 'string' ? body : '',
+        tags: Array.isArray(tags) ? (tags as string[]) : undefined,
+    });
+
     // 201 + `Location` header is the textbook REST answer to a successful POST.
     return Response.json(
         { note },
@@ -67,9 +96,11 @@ export async function POST(request: NextRequest) {
     );
 }
 
-// Convenience for the lab — wipes the store back to the seed list so the
+// Convenience for the lab — wipes the DB back to the seed list so the
 // student can reset the demo without restarting `next dev`.
 //   PUT /api/notes  → reset
 export async function PUT() {
-    return Response.json({ notes: resetNotes() }, { status: 200 });
+    await resetNotes();
+    const notes = await listNotesWithTags();
+    return Response.json({ notes }, { status: 200 });
 }
