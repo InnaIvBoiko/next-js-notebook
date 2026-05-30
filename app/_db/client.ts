@@ -56,19 +56,64 @@ export type Db = typeof db;
 // use `drizzle-kit migrate` against a generated migrations folder; for a
 // teaching notebook with an in-memory DB, raw DDL is simpler and lives
 // next to the schema it mirrors.
+//
+// 🧠 Layout below:
+//   • Auth.js v5 Drizzle-adapter tables: user / account / session / verificationToken
+//     Column names are quoted because Auth.js expects camelCase column names.
+//   • Domain tables: notes (+ user_id FK, Lesson 3) / note_tags.
 const SCHEMA_SQL = `
-  CREATE TABLE IF NOT EXISTS notes (
-    id          SERIAL PRIMARY KEY,
-    title       TEXT   NOT NULL,
-    body        TEXT   NOT NULL DEFAULT '',
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  CREATE TABLE IF NOT EXISTS "user" (
+    id              TEXT        PRIMARY KEY,
+    name            TEXT,
+    email           TEXT        UNIQUE,
+    "emailVerified" TIMESTAMPTZ,
+    image           TEXT,
+    password_hash   TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS account (
+    "userId"            TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    type                TEXT NOT NULL,
+    provider            TEXT NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    refresh_token       TEXT,
+    access_token        TEXT,
+    expires_at          INTEGER,
+    token_type          TEXT,
+    scope               TEXT,
+    id_token            TEXT,
+    session_state       TEXT,
+    PRIMARY KEY (provider, "providerAccountId")
+  );
+
+  CREATE TABLE IF NOT EXISTS session (
+    "sessionToken" TEXT        PRIMARY KEY,
+    "userId"       TEXT        NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    expires        TIMESTAMPTZ NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS "verificationToken" (
+    identifier TEXT        NOT NULL,
+    token      TEXT        NOT NULL,
+    expires    TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (identifier, token)
+  );
+
+  CREATE TABLE IF NOT EXISTS notes (
+    id          SERIAL      PRIMARY KEY,
+    title       TEXT        NOT NULL,
+    body        TEXT        NOT NULL DEFAULT '',
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    user_id     TEXT REFERENCES "user"(id) ON DELETE SET NULL
+  );
+
   CREATE TABLE IF NOT EXISTS note_tags (
-    id       SERIAL PRIMARY KEY,
+    id       SERIAL  PRIMARY KEY,
     note_id  INTEGER NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     label    TEXT    NOT NULL
   );
   CREATE INDEX IF NOT EXISTS note_tags_note_id_idx ON note_tags(note_id);
+  CREATE INDEX IF NOT EXISTS notes_user_id_idx     ON notes(user_id);
 `;
 
 async function boot(): Promise<void> {

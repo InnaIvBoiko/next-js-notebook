@@ -160,7 +160,7 @@ const it: Dictionary = {
                     label: 'Database & ORM',
                     status: 'done',
                 },
-                { slug: 'auth-setup', label: 'Auth.js', status: 'locked' },
+                { slug: 'auth-setup', label: 'Auth.js', status: 'done' },
                 {
                     slug: 'middleware-logic',
                     label: 'Middleware',
@@ -310,7 +310,7 @@ const en: Dictionary = {
                     label: 'Database & ORM',
                     status: 'done',
                 },
-                { slug: 'auth-setup', label: 'Auth.js', status: 'locked' },
+                { slug: 'auth-setup', label: 'Auth.js', status: 'done' },
                 {
                     slug: 'middleware-logic',
                     label: 'Middleware',
@@ -459,7 +459,7 @@ const uk: Dictionary = {
                     label: 'Database & ORM',
                     status: 'done',
                 },
-                { slug: 'auth-setup', label: 'Auth.js', status: 'locked' },
+                { slug: 'auth-setup', label: 'Auth.js', status: 'done' },
                 {
                     slug: 'middleware-logic',
                     label: 'Middleware',
