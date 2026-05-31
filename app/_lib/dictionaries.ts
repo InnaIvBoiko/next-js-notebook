@@ -182,7 +182,7 @@ const it: Dictionary = {
                 {
                     slug: 'seo-metadata',
                     label: 'SEO & Metadata',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'security-env',
@@ -331,7 +331,7 @@ const en: Dictionary = {
                 {
                     slug: 'seo-metadata',
                     label: 'SEO & Metadata',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'security-env',
@@ -480,7 +480,7 @@ const uk: Dictionary = {
                 {
                     slug: 'seo-metadata',
                     label: 'SEO & Metadata',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'security-env',
