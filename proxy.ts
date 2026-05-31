@@ -115,9 +115,58 @@ export default auth(request => {
         'XX';
     requestHeaders.set('x-geo-country', country);
 
+    // ----------------------------------------------------------------------
+    // (5) CSP NONCE per request — Module 5 · Lesson 3 (/security-env)
+    // ----------------------------------------------------------------------
+    // Generate a fresh 128-bit nonce on EVERY request. We:
+    //   (a) inject it as `x-nonce` on the request headers so RSCs can read
+    //       it via `headers()` and apply `nonce={…}` to <Script> tags;
+    //   (b) emit a `Content-Security-Policy` response header that whitelists
+    //       only scripts carrying the same nonce — any inline `<script>` or
+    //       remotely-loaded script not on the allowlist is blocked.
+    //
+    // In dev mode Next/Turbopack injects HMR scripts that we can't tag with
+    // a nonce, so we use `Content-Security-Policy-Report-Only` (it logs
+    // violations to the console instead of blocking) — the user can still
+    // SEE the violation in DevTools but the page keeps working. In prod
+    // it becomes a real blocking `Content-Security-Policy` header.
+    const nonceBytes = new Uint8Array(16);
+    crypto.getRandomValues(nonceBytes);
+    const nonce = btoa(String.fromCharCode(...nonceBytes));
+    requestHeaders.set('x-nonce', nonce);
+
     const response = NextResponse.next({
         request: { headers: requestHeaders },
     });
+
+    // CSP — Content Security Policy. Production-quality directives:
+    //   • default-src 'self'        — block everything not whitelisted below
+    //   • script-src 'self' nonce…  — only scripts with our nonce + same-origin
+    //   • style-src  'self' 'unsafe-inline' — Tailwind v4 inlines styles
+    //   • img-src    blob/data + picsum (Module 5 · Lesson 1 demos)
+    //   • frame-ancestors 'none'    — bare-metal clickjacking protection
+    const isProd = process.env.NODE_ENV === 'production';
+    const csp = [
+        `default-src 'self'`,
+        `script-src 'self' 'nonce-${nonce}' ${isProd ? '' : "'unsafe-eval' 'unsafe-inline'"}`,
+        `style-src 'self' 'unsafe-inline'`,
+        `img-src 'self' blob: data: https://picsum.photos https://fastly.picsum.photos`,
+        `font-src 'self' data:`,
+        `connect-src 'self' ${isProd ? '' : 'ws://localhost:* ws://192.168.0.88:*'}`,
+        `frame-ancestors 'none'`,
+        `base-uri 'self'`,
+        `form-action 'self'`,
+    ]
+        .filter(Boolean)
+        .join('; ');
+
+    // Report-Only in dev (logs violations but doesn't block — keeps HMR
+    // happy), enforced in prod. Try the demo at /lessons/security-env in
+    // dev: violations show in DevTools console even with Report-Only.
+    response.headers.set(
+        isProd ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only',
+        csp,
+    );
 
     // Persist the language cookie. `httpOnly: false` so the LangBar client
     // can also write it on user switch (otherwise client + server would

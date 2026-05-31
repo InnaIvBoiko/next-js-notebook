@@ -187,7 +187,7 @@ const it: Dictionary = {
                 {
                     slug: 'security-env',
                     label: 'Variabili & Sicurezza',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'advanced-routing',
@@ -336,7 +336,7 @@ const en: Dictionary = {
                 {
                     slug: 'security-env',
                     label: 'Env & Security',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'advanced-routing',
@@ -485,7 +485,7 @@ const uk: Dictionary = {
                 {
                     slug: 'security-env',
                     label: 'Env & Безпека',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'advanced-routing',

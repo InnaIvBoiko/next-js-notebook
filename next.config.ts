@@ -56,6 +56,66 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+
+    // 🧠 STATIC SECURITY HEADERS — used by Module 5 · Lesson 3 (/security-env).
+    // These apply to EVERY response (including /api/* and static assets),
+    // even when the proxy doesn't run (its matcher excludes /api/auth and
+    // /_next). The dynamic Content-Security-Policy with per-request nonce
+    // is set inside `proxy.ts` because it needs a fresh random value per
+    // request — `next.config.ts` only supports static values.
+    //
+    // Layered defence: prod uses both the static CSP-adjacent headers below
+    // AND the proxy's nonce-CSP. If the proxy ever fails, these still hold.
+    // 📚 Doc: node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/headers.md
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        // Force HTTPS for one year, including subdomains. Set
+                        // ONLY when the site is fully HTTPS-served (HSTS is
+                        // sticky — a wrong rollout takes a year to expire).
+                        key: 'Strict-Transport-Security',
+                        value: 'max-age=31536000; includeSubDomains; preload',
+                    },
+                    {
+                        // Stop the browser from MIME-sniffing — keep declared
+                        // Content-Type honest. Defeats some XSS techniques.
+                        key: 'X-Content-Type-Options',
+                        value: 'nosniff',
+                    },
+                    {
+                        // Legacy clickjacking protection. CSP `frame-ancestors
+                        // 'none'` (set by proxy) is the modern equivalent; we
+                        // keep this for browsers that don't yet honour CSP3.
+                        key: 'X-Frame-Options',
+                        value: 'DENY',
+                    },
+                    {
+                        // Send referrer ONLY on same-origin, just the origin
+                        // on cross-origin downgrades. Privacy-friendly default.
+                        key: 'Referrer-Policy',
+                        value: 'strict-origin-when-cross-origin',
+                    },
+                    {
+                        // Lock down powerful browser APIs nobody on this site
+                        // legitimately uses. Add features here only when you
+                        // need them.
+                        key: 'Permissions-Policy',
+                        value: 'camera=(), microphone=(), geolocation=(), payment=()',
+                    },
+                    {
+                        // Block DNS prefetching to third-party domains the
+                        // server didn't whitelist. Tiny perf cost, small
+                        // privacy gain.
+                        key: 'X-DNS-Prefetch-Control',
+                        value: 'off',
+                    },
+                ],
+            },
+        ];
+    },
 };
 
 export default nextConfig;
