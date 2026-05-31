@@ -7,9 +7,12 @@
 //
 // 📚 See node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { LANGS, dictionaries, type Lang } from '../_lib/dictionaries';
+
+const LANG_COOKIE = 'nb-lang';
+const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
 
 // -----------------------------------------------------------------------------
 // LanguageSwitcher — interactive Client sub-component ("island")
@@ -84,9 +87,29 @@ function StatusBadge({
 // -----------------------------------------------------------------------------
 // NotebookShell — main Client component
 // -----------------------------------------------------------------------------
-export default function NotebookShell() {
-    // Language state: Italian by default (user requirement).
-    const [lang, setLang] = useState<Lang>('it');
+export default function NotebookShell({
+    initialLang = 'it',
+}: {
+    initialLang?: Lang;
+}) {
+    // Initial value comes from the SERVER (cookie read in app/page.tsx).
+    // SSR HTML and client first render now agree on the same language —
+    // no hydration mismatch, no "Italian flicker" on EN/UK visitors.
+    const [lang, setLangRaw] = useState<Lang>(initialLang);
+
+    // Persist the user's choice to the `nb-lang` cookie so:
+    //   (a) the NEXT server render picks it up;
+    //   (b) navigating to /lessons/* inherits the same language;
+    //   (c) the proxy.ts sniff is skipped on subsequent requests.
+    // Stable identity via useCallback so child memoisation can rely on it.
+    const setLang = useCallback((next: Lang) => {
+        setLangRaw(next);
+        try {
+            document.cookie = `${LANG_COOKIE}=${next}; Path=/; Max-Age=${ONE_YEAR_SECONDS}; SameSite=Lax`;
+        } catch {
+            /* file:// scheme, older browsers — local state still updates */
+        }
+    }, []);
 
     // "Current" dictionary — re-derived on every render when `lang` changes.
     // `t` is a deep object — access strings as `t.hero.title`.
