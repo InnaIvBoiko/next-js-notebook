@@ -28,6 +28,34 @@ const nextConfig: NextConfig = {
     // bundle, only the underlying PGlite driver needs to be external.
     // 📚 Doc: node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/serverExternalPackages.md
     serverExternalPackages: ['@electric-sql/pglite'],
+
+    // 🧠 IMAGE REMOTE PATTERNS — used by Module 5 · Lesson 1 (/optimization-media).
+    // `next/image` ships a SERVER endpoint (`/_next/image?url=...&w=...&q=...`)
+    // that proxies + optimizes any allowed source. To prevent it from being
+    // turned into an open image proxy (DoS, hot-link laundering, SSRF), Next
+    // requires every remote host to be ALLOW-LISTED here. A missing host →
+    // build/runtime error "url not allowed", NOT a silent fallback.
+    //
+    // For the lesson we whitelist picsum.photos (Lorem Picsum) to demo the
+    // "remote source" pattern. Cloudinary / S3 / a CMS would look identical.
+    // Be as specific as you can in real projects — narrow `hostname`,
+    // `pathname`, optionally `port` + `search`.
+    // 📚 Doc: node_modules/next/dist/docs/01-app/01-getting-started/12-images.md
+    // 📚 Doc: node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/images.md
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'picsum.photos',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'fastly.picsum.photos',
+                pathname: '/**',
+            },
+        ],
+    },
 };
 
 export default nextConfig;

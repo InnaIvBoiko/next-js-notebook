@@ -177,7 +177,7 @@ const it: Dictionary = {
                 {
                     slug: 'optimization-media',
                     label: 'Immagini & Font',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'seo-metadata',
@@ -326,7 +326,7 @@ const en: Dictionary = {
                 {
                     slug: 'optimization-media',
                     label: 'Images & Fonts',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'seo-metadata',
@@ -475,7 +475,7 @@ const uk: Dictionary = {
                 {
                     slug: 'optimization-media',
                     label: 'Зображення & Шрифти',
-                    status: 'locked',
+                    status: 'done',
                 },
                 {
                     slug: 'seo-metadata',
