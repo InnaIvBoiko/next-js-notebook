@@ -192,7 +192,7 @@ const it: Dictionary = {
                 {
                     slug: 'advanced-routing',
                     label: 'Routing avanzato',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'deploy-ready', label: 'Deploy', status: 'locked' },
             ],
@@ -341,7 +341,7 @@ const en: Dictionary = {
                 {
                     slug: 'advanced-routing',
                     label: 'Advanced Routing',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'deploy-ready', label: 'Deploy', status: 'locked' },
             ],
@@ -490,7 +490,7 @@ const uk: Dictionary = {
                 {
                     slug: 'advanced-routing',
                     label: 'Розширена маршрутизація',
-                    status: 'locked',
+                    status: 'done',
                 },
                 { slug: 'deploy-ready', label: 'Deploy', status: 'locked' },
             ],
