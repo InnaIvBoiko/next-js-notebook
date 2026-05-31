@@ -15,10 +15,13 @@ export default function PersistenceProbe() {
             type='button'
             onClick={() => setClicks(c => c + 1)}
             title='Click me, then navigate between lesson sub-routes. The value stays.'
-            className='inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300 transition-colors hover:border-emerald-400/60 hover:bg-emerald-500/15'
+            className='inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-emerald-300 transition-colors hover:border-emerald-400/60 hover:bg-emerald-500/15 sm:gap-2 sm:px-3'
         >
             <span className='inline-block h-1.5 w-1.5 rounded-full bg-emerald-400' />
-            layout clicks: {clicks}
+            {/* Compact at narrow widths so the header doesn't wrap into 3 lines
+                at 320px; full label from sm+ where there's room. */}
+            <span className='sm:hidden'>{clicks}</span>
+            <span className='hidden sm:inline'>layout clicks: {clicks}</span>
         </button>
     );
 }

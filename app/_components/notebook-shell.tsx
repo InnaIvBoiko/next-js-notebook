@@ -230,8 +230,44 @@ export default function NotebookShell() {
 
             {/* FOOTER */}
             <footer className='border-t border-slate-800/60'>
-                <div className='mx-auto max-w-6xl px-4 py-6 text-center text-xs text-slate-500 sm:px-6 lg:px-8'>
-                    {t.footer}
+                <div className='mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8'>
+                    <p className='text-center text-xs text-slate-500'>
+                        {t.footer}
+                    </p>
+                    <div className='mt-4 flex flex-col items-center gap-y-1 gap-x-3 text-xs text-slate-500 sm:flex-row sm:justify-center'>
+                        <span>Designed & developed by Inna Boiko</span>
+                        <span aria-hidden className='hidden text-slate-700 sm:inline'>
+                            ·
+                        </span>
+                        <a
+                            href='mailto:inna_boiko@libero.it'
+                            className='text-slate-400 transition-colors hover:text-sky-400'
+                        >
+                            inna_boiko@libero.it
+                        </a>
+                        <span aria-hidden className='hidden text-slate-700 sm:inline'>
+                            ·
+                        </span>
+                        <a
+                            href='https://www.linkedin.com/in/inna-boiko/'
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-slate-400 transition-colors hover:text-sky-400'
+                        >
+                            LinkedIn
+                        </a>
+                        <span aria-hidden className='hidden text-slate-700 sm:inline'>
+                            ·
+                        </span>
+                        <a
+                            href='https://github.com/InnaIvBoiko'
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-slate-400 transition-colors hover:text-sky-400'
+                        >
+                            GitHub
+                        </a>
+                    </div>
                 </div>
             </footer>
         </div>

@@ -75,7 +75,9 @@ function ShellInner({ children }: { children: ReactNode }) {
 function Header() {
     return (
         <header className='sticky top-0 z-10 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur'>
-            <div className='mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6'>
+            {/* flex-wrap + gap-y lets the right group drop under the brand
+                below ~360px without collapsing children awkwardly. */}
+            <div className='mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3 sm:px-6'>
                 <div className='flex items-center gap-3'>
                     <HomeLink />
                     <span className='font-mono text-xs text-sky-400'>
@@ -85,7 +87,7 @@ function Header() {
                         laboratorio interattivo
                     </span>
                 </div>
-                <div className='flex items-center gap-3'>
+                <div className='flex items-center gap-2 sm:gap-3'>
                     <LangBar />
                     <PersistenceProbe />
                 </div>
