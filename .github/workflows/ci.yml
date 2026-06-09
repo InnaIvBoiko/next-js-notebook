@@ -3,17 +3,16 @@
 # -----------------------------------------------------------------------------
 # Runs on every push and pull request to main.
 #
-# Step ORDER matters here. `PageProps`, `LayoutProps`, `RouteContext` and the
-# `*.jpg` module declarations are GLOBAL types that Next.js GENERATES into
-# `.next/types/` and `next-env.d.ts` during a build — both are gitignored, so a
-# clean CI checkout doesn't have them yet. Running `tsc --noEmit` before a build
-# would fail with "Cannot find name 'PageProps'". So we build FIRST (which also
-# runs Next's own full type check), then run `tsc --noEmit` as a belt-and-
-# suspenders gate against the now-generated types.
+# Step ORDER matters. `PageProps`, `LayoutProps`, `RouteContext` and the `*.jpg`
+# module declarations are GLOBAL types Next.js GENERATES into `.next/types/` and
+# `next-env.d.ts` during a build — both are gitignored, so a clean CI checkout
+# doesn't have them yet. Running `tsc --noEmit` BEFORE a build fails with
+# "Cannot find name 'PageProps'". So we build FIRST (which also runs Next's own
+# full type check), then run `tsc --noEmit` as a belt-and-suspenders gate.
 #
 # The build also exercises the zod env validation at boot
-# (app/lessons/security-env/_lib/env.ts), so we provide CI-only dummy secrets
-# at the job level — NOT real credentials, just values that satisfy the schema's
+# (app/lessons/security-env/_lib/env.ts), so we provide CI-only dummy secrets at
+# the job level — NOT real credentials, just values that satisfy the schema's
 # length/format constraints so `next build` succeeds.
 # =============================================================================
 
@@ -50,13 +49,17 @@ jobs:
             NEXT_PUBLIC_FEATURE_BETA: 'false'
 
         steps:
+            # @v5 actions run on Node.js 24 (v4 ran on the now-deprecated
+            # Node.js 20 action runtime). The `node-version` below is the
+            # runtime for our scripts — pinned to 22 (Active LTS) to mirror the
+            # local dev environment and avoid version-drift surprises.
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Setup Node
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
-                  node-version: 20
+                  node-version: 22
                   cache: npm
 
             - name: Install dependencies
