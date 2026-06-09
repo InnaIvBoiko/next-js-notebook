@@ -1,10 +1,20 @@
 # =============================================================================
-# CI — lint · typecheck · unit tests · production build
+# CI — lint · unit tests · production build · typecheck
 # -----------------------------------------------------------------------------
-# Runs on every push and pull request to main. The build step exercises the
-# zod env validation at boot (app/lessons/security-env/_lib/env.ts), so we feed
-# CI-only dummy secrets via `env:` — they are NOT real credentials, just values
-# that satisfy the schema's length/format constraints so `next build` succeeds.
+# Runs on every push and pull request to main.
+#
+# Step ORDER matters here. `PageProps`, `LayoutProps`, `RouteContext` and the
+# `*.jpg` module declarations are GLOBAL types that Next.js GENERATES into
+# `.next/types/` and `next-env.d.ts` during a build — both are gitignored, so a
+# clean CI checkout doesn't have them yet. Running `tsc --noEmit` before a build
+# would fail with "Cannot find name 'PageProps'". So we build FIRST (which also
+# runs Next's own full type check), then run `tsc --noEmit` as a belt-and-
+# suspenders gate against the now-generated types.
+#
+# The build also exercises the zod env validation at boot
+# (app/lessons/security-env/_lib/env.ts), so we provide CI-only dummy secrets
+# at the job level — NOT real credentials, just values that satisfy the schema's
+# length/format constraints so `next build` succeeds.
 # =============================================================================
 
 name: CI
@@ -22,8 +32,22 @@ concurrency:
 
 jobs:
     verify:
+        # NOTE: this exact string is referenced by the branch protection rule on
+        # `main` as a required status check. Renaming it silently breaks the
+        # gate (PRs hang on "Waiting for status to be reported"). Keep it stable
+        # even if the step order changes — the name is just a label.
         name: Lint · Typecheck · Test · Build
         runs-on: ubuntu-latest
+
+        # Dummy values — satisfy the zod env schema, not real secrets. Available
+        # to every step; only the build actually reads them.
+        env:
+            AUTH_SECRET: ci-dummy-auth-secret-0123456789abcdef
+            WEBHOOK_SECRET: ci-dummy-webhook-secret
+            AUTH_GITHUB_ID: ci-dummy-id
+            AUTH_GITHUB_SECRET: ci-dummy-secret
+            NEXT_PUBLIC_SITE_NAME: Living Notebook
+            NEXT_PUBLIC_FEATURE_BETA: 'false'
 
         steps:
             - name: Checkout
@@ -41,19 +65,14 @@ jobs:
             - name: Lint
               run: npm run lint
 
-            - name: Typecheck
-              run: npm run typecheck
-
             - name: Unit tests
               run: npm run test
 
+            # Build first: generates .next/types + next-env.d.ts AND runs Next's
+            # own type check. If this passes, the app is type-safe.
             - name: Production build
               run: npm run build
-              env:
-                  # Dummy values — satisfy zod schema constraints, not real secrets.
-                  AUTH_SECRET: ci-dummy-auth-secret-0123456789abcdef
-                  WEBHOOK_SECRET: ci-dummy-webhook-secret
-                  AUTH_GITHUB_ID: ci-dummy-id
-                  AUTH_GITHUB_SECRET: ci-dummy-secret
-                  NEXT_PUBLIC_SITE_NAME: Living Notebook
-                  NEXT_PUBLIC_FEATURE_BETA: 'false'
+
+            # Redundant safety net against the freshly generated Next types.
+            - name: Typecheck
+              run: npm run typecheck
