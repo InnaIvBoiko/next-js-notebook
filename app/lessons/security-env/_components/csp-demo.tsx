@@ -74,7 +74,7 @@ export default function CspDemo({ nonce }: Props) {
     // CSP saw an inline script and would have blocked it in prod".
     const violationCountRef = useRef(0);
     useEffect(() => {
-        const handler = (_event: SecurityPolicyViolationEvent) => {
+        const handler = () => {
             violationCountRef.current += 1;
         };
         document.addEventListener('securitypolicyviolation', handler);
