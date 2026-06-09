@@ -19,6 +19,7 @@
 ## Table of Contents
 
 - [What is this](#what-is-this)
+- [Screenshots](#screenshots)
 - [Quick start](#quick-start)
 - [The 5 modules · 20 lessons](#the-5-modules--20-lessons)
 - [Tech stack](#tech-stack)
@@ -53,6 +54,20 @@ language is Italian.
 It is **not** a tutorial site, a static blog, or a slide deck. It is an app you
 run locally with `npm run dev`, navigate with your browser, and break with your
 debugger.
+
+---
+
+## Screenshots
+
+| Home — hero & language switcher                          | Home — the 5-module roadmap                          |
+| -------------------------------------------------------- | ---------------------------------------------------- |
+| ![Home hero](docs/screenshots/01-home-hero.png)          | ![Roadmap](docs/screenshots/02-roadmap.png)          |
+
+| Lesson 16 — `next/image` interactive lab                                    | Lesson 5 — fetch memoization debugging lab                                |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| ![Optimization media lab](docs/screenshots/03-optimization-media-lab.png)   | ![Server fetching memoization](docs/screenshots/04-server-fetching.png)   |
+
+> **▶️ Live demo:** [next-js-notebook.vercel.app](https://next-js-notebook.vercel.app/)
 
 ---
 
