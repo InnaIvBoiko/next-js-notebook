@@ -1,0 +1,59 @@
+# =============================================================================
+# CI — lint · typecheck · unit tests · production build
+# -----------------------------------------------------------------------------
+# Runs on every push and pull request to main. The build step exercises the
+# zod env validation at boot (app/lessons/security-env/_lib/env.ts), so we feed
+# CI-only dummy secrets via `env:` — they are NOT real credentials, just values
+# that satisfy the schema's length/format constraints so `next build` succeeds.
+# =============================================================================
+
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+# Cancel superseded runs on the same ref to save minutes.
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    verify:
+        name: Lint · Typecheck · Test · Build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint
+              run: npm run lint
+
+            - name: Typecheck
+              run: npm run typecheck
+
+            - name: Unit tests
+              run: npm run test
+
+            - name: Production build
+              run: npm run build
+              env:
+                  # Dummy values — satisfy zod schema constraints, not real secrets.
+                  AUTH_SECRET: ci-dummy-auth-secret-0123456789abcdef
+                  WEBHOOK_SECRET: ci-dummy-webhook-secret
+                  AUTH_GITHUB_ID: ci-dummy-id
+                  AUTH_GITHUB_SECRET: ci-dummy-secret
+                  NEXT_PUBLIC_SITE_NAME: Living Notebook
+                  NEXT_PUBLIC_FEATURE_BETA: 'false'
