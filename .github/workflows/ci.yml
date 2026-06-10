@@ -29,6 +29,14 @@ concurrency:
     group: ci-${{ github.ref }}
     cancel-in-progress: true
 
+# Some marketplace actions (e.g. actions/upload-artifact@v5) still ship a
+# `node20` runtime, which GitHub deprecation-warns about and will force to
+# `node24` by default from 2026-06-16 anyway. This opt-in runs every JS action
+# on Node 24 now — clearing the warning and matching the future default.
+# https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
     verify:
         # NOTE: this exact string is referenced by the branch protection rule on
