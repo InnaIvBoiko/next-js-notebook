@@ -390,6 +390,9 @@ tutto incompatibile con `output: 'export'`. Vedi Lezione 20.
 | `npm run build`        | Build di produzione → `.next/`                              |
 | `npm start`            | Servi il build di produzione (esegui `npm run build` prima) |
 | `npm run lint`         | ESLint flat config                                          |
+| `npm run typecheck`    | `tsc --noEmit` — type check strict                          |
+| `npm run test`         | Suite unit Vitest (single run)                              |
+| `npm run test:e2e`     | E2E Playwright (avvia il server da solo)                    |
 | `npm run format`       | Prettier write                                              |
 | `npm run format:check` | Prettier check (CI)                                         |
 

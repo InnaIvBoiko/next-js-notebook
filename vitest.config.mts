@@ -23,6 +23,8 @@ export default defineConfig({
         environment: 'jsdom',
         globals: true,
         include: ['**/*.{test,spec}.{ts,tsx}'],
-        exclude: ['node_modules', '.next'],
+        // `e2e/` holds Playwright specs (also *.spec.ts) — they import
+        // `@playwright/test`, not Vitest, so they must be excluded here.
+        exclude: ['node_modules', '.next', 'e2e'],
     },
 });
