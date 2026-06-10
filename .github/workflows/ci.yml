@@ -79,3 +79,57 @@ jobs:
             # Redundant safety net against the freshly generated Next types.
             - name: Typecheck
               run: npm run typecheck
+
+    # -------------------------------------------------------------------------
+    # E2E — Playwright drives a real Chromium against the PRODUCTION build.
+    # Covers what the unit suite can't: async Server Components and the cookie-
+    # driven i18n (SSR/CSR agreement). Runs as its own job so a flaky browser
+    # test never blocks the fast lint/type/build gate, and vice versa.
+    # -------------------------------------------------------------------------
+    e2e:
+        name: E2E · Playwright
+        runs-on: ubuntu-latest
+
+        # Same dummy values as `verify` — satisfy the zod env schema so both the
+        # build and the running server boot. Not real secrets.
+        env:
+            AUTH_SECRET: ci-dummy-auth-secret-0123456789abcdef
+            WEBHOOK_SECRET: ci-dummy-webhook-secret
+            AUTH_GITHUB_ID: ci-dummy-id
+            AUTH_GITHUB_SECRET: ci-dummy-secret
+            NEXT_PUBLIC_SITE_NAME: Living Notebook
+            NEXT_PUBLIC_FEATURE_BETA: 'false'
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
+
+            - name: Setup Node
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            # Pin the Playwright browser + OS deps to the version in the lockfile.
+            - name: Install Playwright browser
+              run: npx playwright install --with-deps chromium
+
+            # webServer in playwright.config.ts runs `npm run start` on CI, so the
+            # production build must exist first.
+            - name: Production build
+              run: npm run build
+
+            - name: Run E2E tests
+              run: npm run test:e2e
+
+            # Keep the HTML report on failure for post-mortem (traces included).
+            - name: Upload Playwright report
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 7

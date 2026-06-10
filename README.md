@@ -59,15 +59,16 @@ debugger.
 
 ## Screenshots
 
-| Home — hero & language switcher                          | Home — the 5-module roadmap                          |
-| -------------------------------------------------------- | ---------------------------------------------------- |
-| ![Home hero](docs/screenshots/01-home-hero.png)          | ![Roadmap](docs/screenshots/02-roadmap.png)          |
+| Home — hero & language switcher                 | Home — the 5-module roadmap                 |
+| ----------------------------------------------- | ------------------------------------------- |
+| ![Home hero](docs/screenshots/01-home-hero.png) | ![Roadmap](docs/screenshots/02-roadmap.png) |
 
-| Lesson 16 — `next/image` interactive lab                                    | Lesson 5 — fetch memoization debugging lab                                |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| ![Optimization media lab](docs/screenshots/03-optimization-media-lab.png)   | ![Server fetching memoization](docs/screenshots/04-server-fetching.png)   |
+| Lesson 16 — `next/image` interactive lab                                  | Lesson 5 — fetch memoization debugging lab                              |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| ![Optimization media lab](docs/screenshots/03-optimization-media-lab.png) | ![Server fetching memoization](docs/screenshots/04-server-fetching.png) |
 
-> **▶️ Live demo:** [next-js-notebook.vercel.app](https://next-js-notebook.vercel.app/)
+> **▶️ Live demo:**
+> [next-js-notebook.vercel.app](https://next-js-notebook.vercel.app/)
 
 ---
 
@@ -393,6 +394,8 @@ Auth.js — all incompatible with `output: 'export'`. See Lesson 20.
 | `npm run typecheck`    | `tsc --noEmit` — strict type check                     |
 | `npm run test`         | Vitest unit suite (single run)                         |
 | `npm run test:watch`   | Vitest in watch mode                                   |
+| `npm run test:e2e`     | Playwright E2E (auto-boots the server)                 |
+| `npm run test:e2e:ui`  | Playwright UI mode (interactive debugging)             |
 | `npm run format`       | Prettier write                                         |
 | `npm run format:check` | Prettier check (CI)                                    |
 
@@ -425,12 +428,27 @@ breaks behaviour:
   `next/headers` to verify the `nb-lang` cookie → `Lang` fallback rule
   (`en`/`uk` honoured, anything else → base `it`).
 
-> Async Server Components are not yet unit-testable under Vitest (a current
-> React limitation noted in the Next.js docs). Their behaviour is exercised by
-> the live deploy and the in-app debugging labs.
+Async Server Components are not yet unit-testable under Vitest (a current React
+limitation noted in the Next.js docs), so a small
+**[Playwright](https://playwright.dev/) E2E suite**
+([`e2e/notebook.spec.ts`](./e2e/notebook.spec.ts)) covers exactly that gap by
+driving a real Chromium against the production build:
 
-Every push and PR to `main` runs the full gate — **lint → typecheck → test →
-build** — via [GitHub Actions](./.github/workflows/ci.yml).
+- the async Server-rendered **home** paints its hero + the M1–M5 roadmap;
+- the **cookie-driven language switch** flips the UI and survives a full
+  navigation to `/lessons` (the SSR/CSR-agreement feature the app is built
+  around);
+- an async **lesson route** (`/lessons/server-fetching`) server-renders without
+  500-ing.
+
+```bash
+npm run test:e2e      # headless, boots the server automatically
+npm run test:e2e:ui   # Playwright UI mode for debugging
+```
+
+Every push and PR to `main` runs two parallel jobs via
+[GitHub Actions](./.github/workflows/ci.yml): the fast gate (**lint → unit test
+→ build → typecheck**) and the **Playwright E2E** job.
 
 ---
 
